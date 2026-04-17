@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "declaration": true,
+    "isolatedModules": true,
+    "lib": ["ES2023"]
+  },
+  "include": ["*.ts", "preconditions/**/*.ts", "tests/**/*.ts"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,786 @@
+{
+  "__codec": "ripplo-lockfile",
+  "data": {
+    "graph": {
+      "edges": [
+        {
+          "from": "data-public-event-type-event-username-event-eventslug",
+          "requiresKeys": {
+            "event": "data:public-event-type"
+          },
+          "to": "data-public-event-type-event-username-event-eventslug",
+          "workflow": "view-public-booking-page"
+        },
+        {
+          "from": "data-public-event-type-event-username-event-eventslug",
+          "requiresKeys": {
+            "event": "data:public-event-type"
+          },
+          "to": "data-public-event-type-event-username-event-eventslug",
+          "workflow": "pick-slot-on-public-booking-page"
+        },
+        {
+          "from": "data-public-event-type-event-username-event-eventslug",
+          "requiresKeys": {
+            "event": "data:public-event-type"
+          },
+          "to": "data-public-event-type-event-username-event-eventslug",
+          "workflow": "book-30min-slot-end-to-end"
+        },
+        {
+          "from": "ripplo-missing-user-xyz123-anything",
+          "requiresKeys": {},
+          "to": "ripplo-missing-user-xyz123-anything",
+          "workflow": "public-booking-page-not-found"
+        },
+        {
+          "from": "data-public-event-type-event-username",
+          "requiresKeys": {
+            "event": "data:public-event-type"
+          },
+          "to": "data-public-event-type-event-username",
+          "workflow": "public-profile-lists-event-types"
+        },
+        {
+          "from": "signup",
+          "requiresKeys": {},
+          "to": "signup",
+          "workflow": "signup-form-validation"
+        },
+        {
+          "from": "data-signup-candidate-signup",
+          "requiresKeys": {
+            "candidate": "data:signup-candidate"
+          },
+          "to": "data-signup-candidate-signup",
+          "workflow": "signup-creates-account"
+        }
+      ],
+      "preconditions": {
+        "data:public-event-type": {
+          "depends": [],
+          "description": "A user with a public 30-minute event type and weekday availability",
+          "returns": []
+        },
+        "data:signup-candidate": {
+          "depends": [],
+          "description": "Unique username/email/password for a signup form submission; teardown deletes the created user",
+          "returns": []
+        }
+      },
+      "states": {
+        "data-public-event-type-event-username": {
+          "preconditions": [
+            "data:public-event-type"
+          ],
+          "route": "/{{event.username}}"
+        },
+        "data-public-event-type-event-username-event-eventslug": {
+          "preconditions": [
+            "data:public-event-type"
+          ],
+          "route": "/{{event.username}}/{{event.eventSlug}}"
+        },
+        "data-signup-candidate-signup": {
+          "preconditions": [
+            "data:signup-candidate"
+          ],
+          "route": "/signup"
+        },
+        "ripplo-missing-user-xyz123-anything": {
+          "preconditions": [],
+          "route": "/ripplo-missing-user-xyz123/anything"
+        },
+        "signup": {
+          "preconditions": [],
+          "route": "/signup"
+        }
+      }
+    },
+    "tests": [
+      {
+        "expectedOutcome": "Event title heading renders and the event meta panel is visible",
+        "name": "Visit a user's public booking page and see event details",
+        "slug": "view-public-booking-page",
+        "spec": {
+          "entryNode": "step-0",
+          "nodes": {
+            "step-0": {
+              "id": "step-0",
+              "label": "navigate to /{{event.username}}/{{event.eventSlug}}",
+              "next": "step-1",
+              "type": "goto",
+              "url": {
+                "type": "static",
+                "value": "/{{event.username}}/{{event.eventSlug}}"
+              }
+            },
+            "step-1": {
+              "id": "step-1",
+              "label": "event title heading renders",
+              "locator": {
+                "by": "role",
+                "name": "{{event.eventTitle}}",
+                "role": "heading"
+              },
+              "next": "step-2",
+              "type": "assertVisible"
+            },
+            "step-2": {
+              "expected": {
+                "type": "static",
+                "value": "/{{event.username}}/{{event.eventSlug}}"
+              },
+              "id": "step-2",
+              "label": "url matches booking page",
+              "operator": "contains",
+              "type": "assertUrl"
+            }
+          },
+          "variableNamespaces": {
+            "event": "data:public-event-type"
+          },
+          "variables": {
+            "event.eventSlug": {
+              "default": "test-event.eventSlug",
+              "type": "string"
+            },
+            "event.eventTitle": {
+              "default": "test-event.eventTitle",
+              "type": "string"
+            },
+            "event.username": {
+              "default": "test-event.username",
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "expectedOutcome": "Date picker month label updates after clicking the next-month button on the booker",
+        "name": "Date picker and month navigation render on public booking page",
+        "slug": "pick-slot-on-public-booking-page",
+        "spec": {
+          "entryNode": "step-0",
+          "nodes": {
+            "step-0": {
+              "id": "step-0",
+              "label": "navigate to /{{event.username}}/{{event.eventSlug}}",
+              "next": "step-1",
+              "type": "goto",
+              "url": {
+                "type": "static",
+                "value": "/{{event.username}}/{{event.eventSlug}}"
+              }
+            },
+            "step-1": {
+              "id": "step-1",
+              "label": "booker container renders",
+              "locator": {
+                "by": "testId",
+                "value": "booker-container"
+              },
+              "next": "step-2",
+              "type": "assertVisible"
+            },
+            "step-2": {
+              "id": "step-2",
+              "label": "month label renders",
+              "locator": {
+                "by": "testId",
+                "value": "selected-month-label"
+              },
+              "next": "step-3",
+              "type": "assertVisible"
+            },
+            "step-3": {
+              "id": "step-3",
+              "label": "click next month",
+              "locator": {
+                "by": "testId",
+                "value": "incrementMonth"
+              },
+              "next": "step-4",
+              "type": "click"
+            },
+            "step-4": {
+              "id": "step-4",
+              "label": "month label still visible after advancing",
+              "locator": {
+                "by": "testId",
+                "value": "selected-month-label"
+              },
+              "next": "step-5",
+              "type": "assertVisible"
+            },
+            "step-5": {
+              "id": "step-5",
+              "label": "decrement month control renders",
+              "locator": {
+                "by": "testId",
+                "value": "decrementMonth"
+              },
+              "type": "assertVisible"
+            }
+          },
+          "variableNamespaces": {
+            "event": "data:public-event-type"
+          },
+          "variables": {
+            "event.eventSlug": {
+              "default": "test-event.eventSlug",
+              "type": "string"
+            },
+            "event.username": {
+              "default": "test-event.username",
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "expectedOutcome": "After submitting the booking form, the booking success page renders the booked event title",
+        "name": "Book a 30-minute slot end-to-end as a guest",
+        "slug": "book-30min-slot-end-to-end",
+        "spec": {
+          "entryNode": "step-0",
+          "nodes": {
+            "step-0": {
+              "id": "step-0",
+              "label": "navigate to /{{event.username}}/{{event.eventSlug}}",
+              "next": "step-1",
+              "type": "goto",
+              "url": {
+                "type": "static",
+                "value": "/{{event.username}}/{{event.eventSlug}}"
+              }
+            },
+            "step-1": {
+              "id": "step-1",
+              "label": "event title heading renders",
+              "locator": {
+                "by": "role",
+                "name": "{{event.eventTitle}}",
+                "role": "heading"
+              },
+              "next": "step-2",
+              "type": "assertVisible"
+            },
+            "step-10": {
+              "id": "step-10",
+              "label": "fill attendee email",
+              "locator": {
+                "by": "role",
+                "name": "Email address *",
+                "role": "textbox"
+              },
+              "next": "step-11",
+              "type": "fill",
+              "value": {
+                "type": "static",
+                "value": "{{event.attendeeEmail}}"
+              }
+            },
+            "step-11": {
+              "expected": {
+                "type": "static",
+                "value": "{{event.attendeeEmail}}"
+              },
+              "id": "step-11",
+              "label": "email field holds attendee email",
+              "locator": {
+                "by": "role",
+                "name": "Email address *",
+                "role": "textbox"
+              },
+              "next": "step-12",
+              "operator": "equals",
+              "type": "assertValue"
+            },
+            "step-12": {
+              "id": "step-12",
+              "label": "submit the booking",
+              "locator": {
+                "by": "role",
+                "name": "Confirm",
+                "role": "button"
+              },
+              "next": "step-13",
+              "type": "click"
+            },
+            "step-13": {
+              "id": "step-13",
+              "label": "event title heading renders on success page",
+              "locator": {
+                "by": "role",
+                "name": "{{event.eventTitle}}",
+                "role": "heading"
+              },
+              "type": "assertVisible"
+            },
+            "step-2": {
+              "id": "step-2",
+              "label": "advance to next month so weekdays are available",
+              "locator": {
+                "by": "testId",
+                "value": "incrementMonth"
+              },
+              "next": "step-3",
+              "type": "click"
+            },
+            "step-3": {
+              "id": "step-3",
+              "label": "next month label renders",
+              "locator": {
+                "by": "testId",
+                "value": "selected-month-label"
+              },
+              "next": "step-4",
+              "type": "assertVisible"
+            },
+            "step-4": {
+              "id": "step-4",
+              "label": "pick the 1st of the next month",
+              "locator": {
+                "by": "role",
+                "name": "1",
+                "role": "button"
+              },
+              "next": "step-5",
+              "type": "click"
+            },
+            "step-5": {
+              "id": "step-5",
+              "label": "time slot button renders for the selected day",
+              "locator": {
+                "by": "role",
+                "name": "4:00am",
+                "role": "button"
+              },
+              "next": "step-6",
+              "type": "assertVisible"
+            },
+            "step-6": {
+              "id": "step-6",
+              "label": "pick the 4:00am time slot",
+              "locator": {
+                "by": "role",
+                "name": "4:00am",
+                "role": "button"
+              },
+              "next": "step-7",
+              "type": "click"
+            },
+            "step-7": {
+              "id": "step-7",
+              "label": "booking form name field renders",
+              "locator": {
+                "by": "role",
+                "name": "Your name*",
+                "role": "textbox"
+              },
+              "next": "step-8",
+              "type": "assertVisible"
+            },
+            "step-8": {
+              "id": "step-8",
+              "label": "fill attendee name",
+              "locator": {
+                "by": "role",
+                "name": "Your name*",
+                "role": "textbox"
+              },
+              "next": "step-9",
+              "type": "fill",
+              "value": {
+                "type": "static",
+                "value": "{{event.attendeeName}}"
+              }
+            },
+            "step-9": {
+              "expected": {
+                "type": "static",
+                "value": "{{event.attendeeName}}"
+              },
+              "id": "step-9",
+              "label": "name field holds attendee name",
+              "locator": {
+                "by": "role",
+                "name": "Your name*",
+                "role": "textbox"
+              },
+              "next": "step-10",
+              "operator": "equals",
+              "type": "assertValue"
+            }
+          },
+          "variableNamespaces": {
+            "event": "data:public-event-type"
+          },
+          "variables": {
+            "event.attendeeEmail": {
+              "default": "test-event.attendeeEmail",
+              "type": "string"
+            },
+            "event.attendeeName": {
+              "default": "test-event.attendeeName",
+              "type": "string"
+            },
+            "event.eventSlug": {
+              "default": "test-event.eventSlug",
+              "type": "string"
+            },
+            "event.eventTitle": {
+              "default": "test-event.eventTitle",
+              "type": "string"
+            },
+            "event.username": {
+              "default": "test-event.username",
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "expectedOutcome": "The 404 page renders with the 'This page does not exist.' heading",
+        "name": "Public booking page for a nonexistent user shows 404",
+        "slug": "public-booking-page-not-found",
+        "spec": {
+          "entryNode": "step-0",
+          "nodes": {
+            "step-0": {
+              "id": "step-0",
+              "label": "navigate to /ripplo-missing-user-xyz123/anything",
+              "next": "step-1",
+              "type": "goto",
+              "url": {
+                "type": "static",
+                "value": "/ripplo-missing-user-xyz123/anything"
+              }
+            },
+            "step-1": {
+              "id": "step-1",
+              "label": "404 page container is visible",
+              "locator": {
+                "by": "testId",
+                "value": "404-page"
+              },
+              "next": "step-2",
+              "type": "assertVisible"
+            },
+            "step-2": {
+              "id": "step-2",
+              "label": "not-found heading renders",
+              "locator": {
+                "by": "role",
+                "name": "This page does not exist.",
+                "role": "heading"
+              },
+              "type": "assertVisible"
+            }
+          },
+          "variableNamespaces": {},
+          "variables": {}
+        }
+      },
+      {
+        "expectedOutcome": "The user's profile page shows the event type title as a heading inside the event-types list",
+        "name": "Public user profile lists their event types",
+        "slug": "public-profile-lists-event-types",
+        "spec": {
+          "entryNode": "step-0",
+          "nodes": {
+            "step-0": {
+              "id": "step-0",
+              "label": "navigate to /{{event.username}}",
+              "next": "step-1",
+              "type": "goto",
+              "url": {
+                "type": "static",
+                "value": "/{{event.username}}"
+              }
+            },
+            "step-1": {
+              "id": "step-1",
+              "label": "event-types list renders",
+              "locator": {
+                "by": "testId",
+                "value": "event-types"
+              },
+              "next": "step-2",
+              "type": "assertVisible"
+            },
+            "step-2": {
+              "id": "step-2",
+              "label": "event type title heading is visible",
+              "locator": {
+                "by": "role",
+                "name": "{{event.eventTitle}}",
+                "role": "heading"
+              },
+              "next": "step-3",
+              "type": "assertVisible"
+            },
+            "step-3": {
+              "expected": {
+                "type": "static",
+                "value": 2
+              },
+              "id": "step-3",
+              "label": "two event type links rendered",
+              "locator": {
+                "by": "testId",
+                "value": "event-type-link"
+              },
+              "operator": "equals",
+              "type": "assertCount"
+            }
+          },
+          "variableNamespaces": {
+            "event": "data:public-event-type"
+          },
+          "variables": {
+            "event.eventTitle": {
+              "default": "test-event.eventTitle",
+              "type": "string"
+            },
+            "event.username": {
+              "default": "test-event.username",
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "expectedOutcome": "After clicking 'Continue with Email', the signup form shows a disabled submit button and the Username, Email, and Password fields",
+        "name": "Signup email form renders required fields after clicking 'Continue with Email'",
+        "slug": "signup-form-validation",
+        "spec": {
+          "entryNode": "step-0",
+          "nodes": {
+            "step-0": {
+              "id": "step-0",
+              "label": "navigate to /signup",
+              "next": "step-1",
+              "type": "goto",
+              "url": {
+                "type": "static",
+                "value": "/signup"
+              }
+            },
+            "step-1": {
+              "id": "step-1",
+              "label": "continue-with-email button renders",
+              "locator": {
+                "by": "testId",
+                "value": "continue-with-email-button"
+              },
+              "next": "step-2",
+              "type": "assertVisible"
+            },
+            "step-2": {
+              "id": "step-2",
+              "label": "click continue with email to reveal form",
+              "locator": {
+                "by": "testId",
+                "value": "continue-with-email-button"
+              },
+              "next": "step-3",
+              "type": "click"
+            },
+            "step-3": {
+              "id": "step-3",
+              "label": "email field renders",
+              "locator": {
+                "by": "testId",
+                "value": "signup-emailfield"
+              },
+              "next": "step-4",
+              "type": "assertVisible"
+            },
+            "step-4": {
+              "id": "step-4",
+              "label": "password field renders",
+              "locator": {
+                "by": "testId",
+                "value": "signup-passwordfield"
+              },
+              "next": "step-5",
+              "type": "assertVisible"
+            },
+            "step-5": {
+              "id": "step-5",
+              "label": "submit button is disabled while fields are empty",
+              "locator": {
+                "by": "testId",
+                "value": "signup-submit-button"
+              },
+              "type": "assertDisabled"
+            }
+          },
+          "variableNamespaces": {},
+          "variables": {}
+        }
+      },
+      {
+        "expectedOutcome": "After submitting a valid signup, the submit button is no longer on the signup page (navigation away from /signup)",
+        "name": "Signup form creates a new account with valid input",
+        "slug": "signup-creates-account",
+        "spec": {
+          "entryNode": "step-0",
+          "nodes": {
+            "step-0": {
+              "id": "step-0",
+              "label": "navigate to /signup",
+              "next": "step-1",
+              "type": "goto",
+              "url": {
+                "type": "static",
+                "value": "/signup"
+              }
+            },
+            "step-1": {
+              "id": "step-1",
+              "label": "reveal the email signup form",
+              "locator": {
+                "by": "testId",
+                "value": "continue-with-email-button"
+              },
+              "next": "step-2",
+              "type": "click"
+            },
+            "step-10": {
+              "id": "step-10",
+              "label": "signup submit button is gone after successful signup",
+              "locator": {
+                "by": "testId",
+                "value": "signup-submit-button"
+              },
+              "type": "assertNotVisible"
+            },
+            "step-2": {
+              "id": "step-2",
+              "label": "username field renders",
+              "locator": {
+                "by": "testId",
+                "value": "signup-usernamefield"
+              },
+              "next": "step-3",
+              "type": "assertVisible"
+            },
+            "step-3": {
+              "id": "step-3",
+              "label": "fill username",
+              "locator": {
+                "by": "testId",
+                "value": "signup-usernamefield"
+              },
+              "next": "step-4",
+              "type": "fill",
+              "value": {
+                "type": "static",
+                "value": "{{candidate.username}}"
+              }
+            },
+            "step-4": {
+              "expected": {
+                "type": "static",
+                "value": "{{candidate.username}}"
+              },
+              "id": "step-4",
+              "label": "username field holds the candidate username",
+              "locator": {
+                "by": "testId",
+                "value": "signup-usernamefield"
+              },
+              "next": "step-5",
+              "operator": "equals",
+              "type": "assertValue"
+            },
+            "step-5": {
+              "id": "step-5",
+              "label": "fill email",
+              "locator": {
+                "by": "testId",
+                "value": "signup-emailfield"
+              },
+              "next": "step-6",
+              "type": "fill",
+              "value": {
+                "type": "static",
+                "value": "{{candidate.email}}"
+              }
+            },
+            "step-6": {
+              "expected": {
+                "type": "static",
+                "value": "{{candidate.email}}"
+              },
+              "id": "step-6",
+              "label": "email field holds the candidate email",
+              "locator": {
+                "by": "testId",
+                "value": "signup-emailfield"
+              },
+              "next": "step-7",
+              "operator": "equals",
+              "type": "assertValue"
+            },
+            "step-7": {
+              "id": "step-7",
+              "label": "fill password",
+              "locator": {
+                "by": "testId",
+                "value": "signup-passwordfield"
+              },
+              "next": "step-8",
+              "type": "fill",
+              "value": {
+                "type": "static",
+                "value": "{{candidate.password}}"
+              }
+            },
+            "step-8": {
+              "id": "step-8",
+              "label": "submit button is enabled after filling fields",
+              "locator": {
+                "by": "testId",
+                "value": "signup-submit-button"
+              },
+              "next": "step-9",
+              "type": "assertEnabled"
+            },
+            "step-9": {
+              "id": "step-9",
+              "label": "submit the signup form",
+              "locator": {
+                "by": "testId",
+                "value": "signup-submit-button"
+              },
+              "next": "step-10",
+              "type": "click"
+            }
+          },
+          "variableNamespaces": {
+            "candidate": "data:signup-candidate"
+          },
+          "variables": {
+            "candidate.email": {
+              "default": "test-candidate.email",
+              "type": "string"
+            },
+            "candidate.password": {
+              "default": "test-candidate.password",
+              "type": "string"
+            },
+            "candidate.username": {
+              "default": "test-candidate.username",
+              "type": "string"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "version": 1
+}

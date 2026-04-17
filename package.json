@@ -92,6 +92,7 @@
     "@jetstreamapp/soql-parser-js": "6.1.0",
     "@playwright/test": "1.57.0",
     "@prisma/internals": "6.16.2",
+    "@ripplo/testing": "^0.0.4",
     "@snaplet/copycat": "4.1.0",
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "16.0.1",
@@ -99,6 +100,7 @@
     "@vitest/ui": "4.0.16",
     "c8": "7.13.0",
     "checkly": "latest",
+    "dotenv": "^17.4.2",
     "dotenv-checker": "1.1.5",
     "husky": "9.1.7",
     "i18n-unused": "0.13.0",
@@ -116,7 +118,8 @@
     "typescript": "5.9.3",
     "vitest": "4.0.16",
     "vitest-fetch-mock": "0.4.5",
-    "vitest-mock-extended": "3.1.0"
+    "vitest-mock-extended": "3.1.0",
+    "zod": "^3"
   },
   "resolutions": {
     "webpack": "5.104.1",
